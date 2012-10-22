@@ -3,7 +3,7 @@
     <!-- -*- extra stuff goes here -*- -->
 
     <layer name="KrzLabjs"
-        interface="krz.labjs.interfaces.krzlabjslayer.IKrzLabjsLayer"
+        interface="krz.labjs.interfaces.IKrzLabjsLayer"
     />
 </layers>
 

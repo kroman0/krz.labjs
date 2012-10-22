@@ -9,11 +9,17 @@
 
   <genericsetup:registerProfile
       name="default"
-      title="krz.labjs"
+      title="LABjs for Plone"
       directory="profiles/default"
       description="Installs the krz.labjs package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
   <!-- -*- extra stuff goes here -*- -->
+  <include package="plone.transformchain" />
+
+  <adapter
+      name="krz.labjs"
+      factory=".labjs.LABjs"
+      />
   
 </configure>
