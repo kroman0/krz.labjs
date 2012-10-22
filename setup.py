@@ -25,6 +25,7 @@ setup(name='krz.labjs',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.transformchain',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
