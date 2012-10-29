@@ -11,7 +11,7 @@ def labjsreplace(matchobj):
     if url:
         return """<script%s>$LAB.script("%s")</script>"""%(tp,url)
     elif code:
-        return """<script%s>$LAB.wait(function(){%s})</script>"""%(tp,url)
+        return """<script%s>$LAB.wait(function(){%s})</script>"""%(tp,code)
     else:
         return matchobj.group()
 
@@ -19,7 +19,7 @@ def labjsmerge(matchobj):
     end = matchobj.groupdict().get('end', "")
     return end + ";"
 
-SCRIPTRE = re.compile("(?P<script><script(?P<type>\s*?type=\"text/javascript\")?(?:\s*?src=\"(?P<url>.*)\")?\s*?>(?P<code>.*)</script>)",re.I)
+SCRIPTRE = re.compile("(?P<script><script(?P<type>\s*?type=\"text/javascript\")?(?:\s*?src=\"(?P<url>[^\"]*?)\")?\s*?>(?P<code>.*?)</script>)",re.I+re.S)
 MERGERE = re.compile("(?P<end>[^>])</script>\s*<script(?:\s*?type=\"text/javascript\")\s*?>",re.I)
 
 LABJS = """<script type="text/javascript" src="++resource++LAB.js"></script>"""
