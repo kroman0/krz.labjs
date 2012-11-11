@@ -49,7 +49,7 @@ def test_suite():
         #    'browser.txt', package='krz.labjs',
         #    test_class=TestCase),
 
-        ])
+    ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
