@@ -17,11 +17,6 @@
       />
   <!-- -*- extra stuff goes here -*- -->
   <include package="plone.transformchain" />
-  <browser:resource
-        name="LAB.js"
-        image="LAB.min.js"
-        layer=".interfaces.IKrzLabjsLayer"
-        />
   <adapter
       name="krz.labjs"
       factory=".labjs.LABjs"
