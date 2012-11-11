@@ -1,31 +1,25 @@
 import re
+from Globals import DevelopmentMode as DEBUG
+from os.path import join as pjoin, dirname
 from zope.interface import implements, Interface
 from zope.component import adapts
 from plone.transformchain.interfaces import ITransform
 from krz.labjs.interfaces import IKrzLabjsLayer
 
-def labjsreplace(matchobj):
-    url = matchobj.groupdict().get('url', None)
-    code = matchobj.groupdict().get('code', None)
-    tp = matchobj.groupdict().get('type', None)
-    if url:
-        return """<script%s>$LAB.script("%s")</script>"""%(tp,url)
-    elif code:
-        return """<script%s>$LAB.wait(function(){%s})</script>"""%(tp,code)
-    else:
-        return matchobj.group()
 
-def labjsmerge(matchobj):
-    end = matchobj.groupdict().get('end', "")
-    return end + ";"
-
-SCRIPTRE = re.compile("(?P<script><script(?P<type>\s*?type=\"text/javascript\")?(?:\s*?src=\"(?P<url>[^\"]*?)\")?\s*?>(?P<code>.*?)</script>)",re.I+re.S)
-MERGERE = re.compile("(?P<end>[^>])</script>\s*<script(?:\s*?type=\"text/javascript\")\s*?>",re.I)
-
-LABJS = """<script type="text/javascript" src="++resource++LAB.js"></script>"""
-LABJS_INIT = '<script type="text/javascript">$LAB.setOptions({AlwaysPreserveOrder:true})</script>'
-SCRIPT = "<script"
-LABJSSCRIPT = LABJS + LABJS_INIT + SCRIPT
+SCRIPTRE = re.compile(
+    '(?:<script(?:\s*?type="text/javascript")?'
+    '(?:\s*?src="(?P<url>[^"]*?)")?\s*?>(?P<code>.*?)</script>)',
+    re.I + re.S)
+LABJS = pjoin(dirname(__file__), DEBUG and 'LAB-debug.min.js' or 'LAB.min.js')
+LABJS = open(LABJS)
+LABJS_SCRIPT = LABJS.read()
+LABJS.close()
+LABJS_INIT = '$LAB.setGlobalDefaults({AlwaysPreserveOrder:true%s})' % (
+    DEBUG and ',Debug:true' or '')
+LABJS = '<script type="text/javascript">%s%s%%s</script>' % (
+    LABJS_SCRIPT, LABJS_INIT)
+BEFORE = '</body>'
 
 
 class LABjs(object):
@@ -35,7 +29,7 @@ class LABjs(object):
     implements(ITransform)
     adapts(Interface, IKrzLabjsLayer)
 
-    order = 10**4
+    order = 10 ** 4 + 1
 
     def __init__(self, published, request):
         self.published = published
@@ -55,7 +49,13 @@ class LABjs(object):
             return None
 
         res = "\n".join(result)
-        labresult = SCRIPTRE.sub(labjsreplace, res)
-        labresult = labresult.replace(SCRIPT, LABJSSCRIPT, 1)
-        labresult = MERGERE.sub(labjsmerge, labresult)
+        scripts = SCRIPTRE.findall(res)
+        labresult = SCRIPTRE.sub(lambda x: "", res)
+        scripts = [
+            i[0] and '.script("%s")' % i[0] or '.wait(function(){%s})' % i[1]
+            for i in scripts
+            ]
+        js = "".join(scripts)
+        js = LABJS % js
+        labresult = labresult.replace(BEFORE, js + BEFORE, 1)
         return labresult

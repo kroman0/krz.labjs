@@ -3,6 +3,6 @@ from zope.interface import Interface
 
 
 class IKrzLabjsLayer(Interface):
-    """ A layer specific to this product. 
+    """ A layer specific to this product.
         Is registered using browserlayer.xml
     """
