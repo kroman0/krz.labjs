@@ -20,6 +20,7 @@ LABJS_INIT = '$LAB.setGlobalDefaults({AlwaysPreserveOrder:true%s})' % (
 LABJS = '<script type="text/javascript">%s%s%%s</script>' % (
     LABJS_SCRIPT, LABJS_INIT)
 BEFORE = '</body>'
+AFTER = '</title>'
 
 
 class LABjs(object):
@@ -57,5 +58,6 @@ class LABjs(object):
             ]
         js = "".join(scripts)
         js = LABJS % js
-        labresult = labresult.replace(BEFORE, js + BEFORE, 1)
+        #labresult = labresult.replace(BEFORE, js + BEFORE, 1)
+        labresult = labresult.replace(AFTER, AFTER + js, 1)
         return labresult
