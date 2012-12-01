@@ -55,7 +55,7 @@ class LABjs(object):
         scripts = [
             i[0] and '.script("%s")' % i[0] or '.wait(function(){%s})' % i[1]
             for i in scripts
-            ]
+        ]
         js = "".join(scripts)
         js = LABJS % js
         #labresult = labresult.replace(BEFORE, js + BEFORE, 1)
