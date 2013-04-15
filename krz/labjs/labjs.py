@@ -9,7 +9,7 @@ from krz.labjs.interfaces import IKrzLabjsLayer
 
 SCRIPTRE = re.compile(
     '(?:<script(?![^>]*?class="nolabjs"[^>]*?)'
-    '(?:src="(?P<url>[^"]*?)")?[^>]*?>(?P<code>.*?)</script>)',
+    '(?:[^>]*?src="(?P<url>[^"]*?)")?[^>]*?>(?P<code>.*?)</script>)',
     re.I + re.S)
 LABJS = pjoin(dirname(__file__), DEBUG and 'LAB-debug.min.js' or 'LAB.min.js')
 LABJS = open(LABJS)
