@@ -46,7 +46,8 @@ class LABjs(object):
         """Apply the transform
         """
         contentType = self.request.response.getHeader('Content-Type')
-        if contentType is None or not contentType.startswith('text/html'):
+        ajax = self.request.headers.get('X-Requested-With', '').startswith('XML')
+        if ajax or contentType is None or not contentType.startswith('text/html'):
             return None
 
         res = "\n".join(result)
