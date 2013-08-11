@@ -1,4 +1,5 @@
 import re
+from AccessControl import getSecurityManager
 from Globals import DevelopmentMode as DEBUG
 from os.path import join as pjoin, dirname
 from zope.interface import implements, Interface
@@ -45,9 +46,12 @@ class LABjs(object):
     def transformIterable(self, result, encoding):
         """Apply the transform
         """
+        user_id = getSecurityManager().getUser().getId()
         contentType = self.request.response.getHeader('Content-Type')
-        ajax = self.request.get_header('X-Requested-With', '').startswith('XML')
-        if ajax or contentType is None or not contentType.startswith('text/html'):
+        html = contentType and contentType.startswith('text/html')
+        ajax = self.request.get_header('X-Requested-With', '')
+        ajax = ajax.startswith('XML')
+        if user_id or ajax or not html:
             return None
 
         res = "\n".join(result)
